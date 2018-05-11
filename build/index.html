@@ -3,145 +3,14 @@
 
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" type="text/css" href="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Test</title>
-  <style>
-    .slider {
-      border-radius: 5px;
-      background: #E0E0E0;
-      background: -moz-linear-gradient(left top, #E0E0E0, #EEEEEE) repeat scroll 0 0 transparent;
-      background: -webkit-gradient(linear, left top, right bottom, from(#E0E0E0), to(#EEEEEE));
-      background: linear-gradient(left top, #E0E0E0, #EEEEEE);
-      width: 80vw;
-      height: 60px;
-      margin: 5px;
-    }
-
-    .thumb {
-      width: 20px;
-      height: 70px;
-      border-radius: 3px;
-      position: relative;
-      left: 10px;
-      top: -5px;
-      background: blue;
-      cursor: pointer;
-    }
-
-    .content {
-      width: 60vw;
-      height: 800px;
-      background: url(https://puu.sh/zTVKJ/98f2694488.svg) no-repeat; 
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: contain;
-    }
-  </style>
 </head>
 
 <body>
-
-  <div id="slider" class="slider">
-    <div class="thumb"></div>    
-  </div>
-  <div class="percent"></div>
-  <div class="content"></div>
-
-  <script>
-    let currentProgressPercent = 0;
-    var sliderElem = document.getElementById('slider');
-    var percentElem = document.querySelector('.percent');
-    var content = document.querySelector('.content');
-    var thumbElem = sliderElem.children[0];
-
-    let events = [
-      first = {
-        time: 20,
-        text: 'first event',
-        image: 'https://s.tcdn.co/e78/90b/e7890b10-1c4c-3cd4-a176-4e1010807ace/192/1.png'
-      },
-      second = {
-        time: 80,
-        text: 'second event',
-        image: 'https://media2.giphy.com/media/w0CJXS2M44xfW/480w_s.jpg'
-      },
-      third = {
-        time: 40,
-        text: 'sieg heil',
-        image: 'https://i.pinimg.com/originals/03/34/35/0334356b8a5f2cbea0bb31ed12e00159.jpg'
-      }
-    ];
    
-    var eventText = document.createElement("div");
-    var eventImg = document.createElement("img");
-
-
-
-
-    thumbElem.onmousedown = function (e) {
-      var thumbCoords = getCoords(thumbElem);
-      var shiftX = e.pageX - thumbCoords.left;
-      // shiftY здесь не нужен, слайдер двигается только по горизонтали
-
-      var sliderCoords = getCoords(sliderElem);
-      document.onmousemove = function (e) {
-        //  вычесть координату родителя, т.к. position: relative
-        var newLeft = e.pageX - shiftX - sliderCoords.left;
-        
-        // курсор ушёл вне слайдера
-        if (newLeft < 0) {
-          newLeft = 0;
-        }
-        var rightEdge = sliderElem.offsetWidth - thumbElem.offsetWidth;
-        if (newLeft > rightEdge) {
-          newLeft = rightEdge;
-        }
-
-        let thumbStyleLeft = thumbElem.style.left.slice(0, -2);
-        thumbElem.style.left = newLeft + 'px';
-        currentProgressPercent = Math.round(100 - Math.abs(((+thumbStyleLeft + thumbElem.offsetWidth / 2) - sliderElem.offsetWidth) / sliderElem.offsetWidth * 100));
-        percentElem.innerHTML = currentProgressPercent;
-       
-
-        let currentEvent = events.filter(item => {
-          return item.time == currentProgressPercent;
-        });
-        if (currentEvent.length != 0) {
-          content.innerHTML = null;
-          let eventText = document.createElement("div");
-          let eventImg = document.createElement("img");
-          eventImg.setAttribute("src", currentEvent[0].image);
-          eventImg.setAttribute("width", "200");
-          eventText.innerHTML = currentEvent[0].text;
-          content.appendChild(eventImg);
-          content.appendChild(eventText);
-        }
-        console.log(currentEvent, thumbStyleLeft, currentProgressPercent);
-      }
-
-      document.onmouseup = function () {
-        document.onmousemove = document.onmouseup = null;
-      };
-
-      return false; // disable selection start (cursor change)
-    };
-
-    thumbElem.ondragstart = function () {
-      return false;
-    };
-
-    function getCoords(elem) { // кроме IE8-
-      var box = elem.getBoundingClientRect();
-
-      return {
-        top: box.top + pageYOffset,
-        left: box.left + pageXOffset
-      };
-
-    }
-  </script>
-
+  <div id="root"></div>
+  <script src="./bundle.js"></script>
 </body>
 
 </html>

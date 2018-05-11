@@ -13,19 +13,28 @@ module.exports = {
         path: BUILD_DIR,
     },
     module: {
-        loaders: [
+        rules: [{
+                test: /(\.css|.scss)$/,
+                use: [{
+                    loader: "style-loader" // creates style nodes from JS strings
+                }, {
+                    loader: "css-loader" // translates CSS into CommonJS
+                }, {
+                    loader: "sass-loader" // compiles Sass to CSS
+                }]
+            },
             {
-                test: /\.js$/,
+                test: /\.(jsx|js)?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['env', 'react']
-                }
+                use: [{
+                    loader: "babel-loader",
+                    options: {
+                        cacheDirectory: true,
+                        presets: ['react', 'env'],
+                        plugins: ['transform-class-properties']
+                    }
+                }]
             }
-        ]
-    },
-    stats: {
-        colors: true
-    },
-    devtool: 'source-map'
+        ],
+    }
 };
