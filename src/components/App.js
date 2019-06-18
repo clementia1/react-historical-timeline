@@ -1,51 +1,78 @@
 import React from 'react';
+import axios from 'axios';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/dist/rc-slider.min.css';
 import svgfile from '../static/svg/ukraine.svg';
 
 class App extends React.Component {
-    constructor() {
-        super();
-    }
+        constructor() {
+            super();
+            this.state = {
+                events: []
+            }
+        }
 
-    render() {
-        const style = {
-            width: 'auto',
-            margin: 50
-        };
-        const marks = {
-            5: {
-                style: {
+        componentDidMount() {
+            axios.get('/api/getevents').then((response) => {
+                this.setState({
+                    events: response.data
+                })
+            });
+        }
+
+        render() {
+            const style = {
+                width: 'auto',
+                margin: 50
+            };
+
+            const marks = {};
+
+            function addElement (marks, element) {
+                let newList = Object.assign(marks, element)
+                return newList
+            }
+            
+
+            this.state.events.forEach((item, index) => {                
+                let percent = 50;
+                if (index == 0) {
+                    addElement(marks, { 0: {style: {}, label: [item.date] }})
+                } else if (index == this.state.events.length - 1) {
+                    addElement(marks, { 100: {style: {}, label: [item.date] }})
+                } else {
+                    addElement(marks, { [percent]: {style: {}, label: [item.date] }})
+                }
+            })
+            console.log(marks)
+/*             const marks = {
+                5: {
+                    style: {},
+                    label: 'March 1939'
                 },
-                label: 'March 1939'
-            },
-            15: {
-                style: {                   
+                15: {
+                    style: {},
+                    label: 'April 1939'
                 },
-                label: 'April 1939'
-            },
-            30: {
-                style: {                    
+                30: {
+                    style: {},
+                    label: <strong>May 1939</strong>
                 },
-                label: <strong>May 1939</strong>
-            },
-            45: {
-                style: {                   
+                45: {
+                    style: {},
+                    label: 'May 1941'
                 },
-                label: 'May 1941'
-            },
-            70: {
-                style: {                    
+                70: {
+                    style: {},
+                    label: 'June 1941'
                 },
-                label: 'June 1941'
-            },
-            100: {
-                style: {
-                    color: 'red',                    
+                100: {
+                    style: {
+                        color: 'red',                    
+                    },
+                    label: <strong>July 1941</strong>,
                 },
-                label: <strong>July 1941</strong>,
-            },
-        };
+            }; */
 
         return (
             <div>
@@ -63,21 +90,20 @@ class App extends React.Component {
                         <div className="tab-pane fade show active" id="first" role="tabpanel" aria-labelledby="first-tab">
                             <div className="row">
                                 <div className="col">
-
-                                    <div class="form-row">
-                                        <div class="col">
-                                        <input type="text" class="form-control" placeholder="Event title"/>
+                                    <div className="form-row">
+                                        <div className="col">
+                                        <input type="text" className="form-control" placeholder="Event title"/>
                                         </div>                                        
                                     </div>
-                                    <div class="form-row">
-                                        <div class="col">
-                                        <input type="text" class="form-control" placeholder="Event summary"/>
+                                    <div className="form-row">
+                                        <div className="col">
+                                        <input type="text" className="form-control" placeholder="Event summary"/>
                                         </div>                                        
                                     </div>
                                 </div>
                                 <div className="col">
-                                    <div>
-                                        <img src={svgfile} alt="Map" />
+                                    <div className="map-box">
+                                        <img src={svgfile} className="map" alt="Map" />
                                     </div>
                                     <div style={style}>                                
                                         <Slider min={0} marks={marks} step={null} defaultValue={0} />
