@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/dist/rc-slider.min.css';
+import svgfile from '../static/svg/ukraine.svg';
 
 class App extends React.Component {
     constructor() {
@@ -75,7 +76,9 @@ class App extends React.Component {
                                     </div>
                                 </div>
                                 <div className="col">
-                                Preview area
+                                    <div>
+                                        <img src={svgfile} alt="Map" />
+                                    </div>
                                     <div style={style}>                                
                                         <Slider min={0} marks={marks} step={null} defaultValue={0} />
                                     </div>                                  
