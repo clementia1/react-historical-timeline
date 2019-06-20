@@ -3,12 +3,16 @@ import axios from 'axios';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/dist/rc-slider.min.css';
 import svgfile from '../static/svg/ukraine.svg';
+import SvgComponent from './SvgComponent.js';
+import Card from './Card.js';
 
 class App extends React.Component {
         constructor() {
             super();
             this.state = {
-                events: []
+                events: [],
+                value: 0,
+                currentEventID: null
             }
         }
 
@@ -20,10 +24,18 @@ class App extends React.Component {
             });
         }
 
+        onSliderChange = (value) => {
+            this.setState({value});
+        }
+
+        handleClick = (e) => {
+            console.log(e.target)
+        }
+
         render() {
             const style = {
                 width: 'auto',
-                margin: 50
+                margin: 10
             };
 
             const marks = {};
@@ -44,8 +56,7 @@ class App extends React.Component {
                     addElement(marks, { [percent]: {style: {}, label: [item.date] }})
                 }
             })
-            console.log(marks)
-/*             const marks = {
+            /*const marks = {
                 5: {
                     style: {},
                     label: 'March 1939'
@@ -89,24 +100,16 @@ class App extends React.Component {
                     <div className="tab-content" id="myTabContent">
                         <div className="tab-pane fade show active" id="first" role="tabpanel" aria-labelledby="first-tab">
                             <div className="row">
-                                <div className="col">
-                                    <div className="form-row">
-                                        <div className="col">
-                                        <input type="text" className="form-control" placeholder="Event title"/>
-                                        </div>                                        
-                                    </div>
-                                    <div className="form-row">
-                                        <div className="col">
-                                        <input type="text" className="form-control" placeholder="Event summary"/>
-                                        </div>                                        
-                                    </div>
+                                <div className="col-3">
+                                    <Card/>
                                 </div>
-                                <div className="col">
+                                <div className="col-9">
                                     <div className="map-box">
-                                        <img src={svgfile} className="map" alt="Map" />
+                                        {/* <img src={svgfile} className="map" alt="Map" /> */}
+                                        <SvgComponent />
                                     </div>
                                     <div style={style}>                                
-                                        <Slider min={0} marks={marks} step={null} defaultValue={0} />
+                                        <Slider min={0} marks={marks} step={null} value={this.state.value} onMouseDown={this.handleClick} onChange={this.onSliderChange}/>
                                     </div>                                  
                                 </div>
                             </div>
