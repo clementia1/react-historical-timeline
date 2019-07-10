@@ -11,16 +11,27 @@ class App extends React.Component {
             this.state = {
                 events: [],
                 value: 0,
+                minDate: 0,
+                maxDate: 0,
                 currentEventID: null
             }
         }
 
-        componentDidMount() {
+        componentDidMount() {            
             axios.get('/api/getevents').then((response) => {
                 this.setState({
-                    events: response.data
+                    events: response.data,
+                    minDate: response.data[0].date,
+                    maxDate: response.data[response.data.length - 1].date
                 })
+                this.getCurrentEventData();
             });
+            
+        }
+
+        getCurrentEventData = () => {
+            let currentDate = ((this.state.value * (new Date(this.state.maxDate).getTime() - new Date(this.state.minDate).getTime())) / 100) + new Date(this.state.minDate).getTime();
+            console.log(currentDate, new Date(currentDate));
         }
 
         onSliderChange = (value) => {
@@ -41,13 +52,10 @@ class App extends React.Component {
             }
             
 
-            this.state.events.forEach((item, index, arr) => {       
-                let minDate = new Date(arr[0].date).getTime();
-                let maxDate = new Date(arr[arr.length - 1].date).getTime();
+            this.state.events.forEach((item, index) => {       
                 let currentDate = new Date(item.date).getTime();
-                let distance = maxDate - minDate;
-                let percent = ((currentDate - minDate) / (maxDate - minDate)) * 100;
-                console.log(percent);
+                let percent = ((currentDate - new Date(this.state.minDate).getTime()) / (new Date(this.state.maxDate).getTime() - new Date(this.state.minDate).getTime())) * 100;
+                
                 if (index == 0) {
                     addElement(marks, { 0: {style: {}, label: [item.date] }})
                 } else if (index == this.state.events.length - 1) {
@@ -108,7 +116,7 @@ class App extends React.Component {
                                         <SvgComponent />
                                     </div>
                                     <div style={style}>                                
-                                        <Slider min={0} marks={marks} step={null} value={this.state.value} onChange={this.onSliderChange}/>
+                                        <Slider min={0} marks={marks} step={null} value={this.state.value} onAfterChange={this.getCurrentEventData} onChange={this.onSliderChange}/>
                                     </div>                                  
                                 </div>
                             </div>
