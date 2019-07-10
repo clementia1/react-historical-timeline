@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/dist/rc-slider.min.css';
-import svgfile from '../static/svg/ukraine.svg';
 import SvgComponent from './SvgComponent.js';
 import Card from './Card.js';
 
@@ -28,10 +27,6 @@ class App extends React.Component {
             this.setState({value});
         }
 
-        handleClick = (e) => {
-            console.log(e.target)
-        }
-
         render() {
             const style = {
                 width: 'auto',
@@ -46,8 +41,13 @@ class App extends React.Component {
             }
             
 
-            this.state.events.forEach((item, index) => {                
-                let percent = 50;
+            this.state.events.forEach((item, index, arr) => {       
+                let minDate = new Date(arr[0].date).getTime();
+                let maxDate = new Date(arr[arr.length - 1].date).getTime();
+                let currentDate = new Date(item.date).getTime();
+                let distance = maxDate - minDate;
+                let percent = ((currentDate - minDate) / (maxDate - minDate)) * 100;
+                console.log(percent);
                 if (index == 0) {
                     addElement(marks, { 0: {style: {}, label: [item.date] }})
                 } else if (index == this.state.events.length - 1) {
@@ -105,11 +105,10 @@ class App extends React.Component {
                                 </div>
                                 <div className="col-9">
                                     <div className="map-box">
-                                        {/* <img src={svgfile} className="map" alt="Map" /> */}
                                         <SvgComponent />
                                     </div>
                                     <div style={style}>                                
-                                        <Slider min={0} marks={marks} step={null} value={this.state.value} onMouseDown={this.handleClick} onChange={this.onSliderChange}/>
+                                        <Slider min={0} marks={marks} step={null} value={this.state.value} onChange={this.onSliderChange}/>
                                     </div>                                  
                                 </div>
                             </div>
